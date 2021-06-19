@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">VKUpload</string>
+
+    <string name="text_initial_loading_error">Error loading</string>
+    <string name="text_initial_loading_retry">Retry</string>
+    <string name="text_paging_loading_error">Error loading</string>
+    <string name="text_paging_loading_retry">Retry</string>
+    <string name="text_welcome_message">Click Profile or button below to</string>
+    <string name="button_text">Log in with VK</string>
+    <string name="text_item_empty">No data</string>
+    
+    <string name="text_video_uploading_progress">%s / %s</string>
+    
+</resources>

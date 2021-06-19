@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fafafa</color>
+    <color name="colorPrimaryDark">#c7c7c7</color>
+    <color name="colorPrimaryLight">#ffffff</color>
+    <color name="colorAccent">#99000000</color>
+    <color name="colorPrimaryBackground">#ffffff</color>
+    <color name="colorPrimarySurface">#ffffff</color>
+    <color name="colorPrimaryError">#B00020</color>
+    <color name="colorOnPrimary">#de000000</color>
+    <color name="colorOnPrimaryMedium">#99000000</color>
+    <color name="colorOnSecondary">#e6ffffff</color>
+    <color name="colorOnBackground">#de000000</color>
+    <color name="colorOnBackgroundMedium">#99000000</color>
+    <color name="colorOnSurface">#de000000</color>
+    <color name="colorOnSurfaceMedium">#99000000</color>
+    <color name="colorOnError">#ffffff</color>
+
+    <color name="colorBrand">#597da3</color>
+    <color name="scrimStartGradient">#00000000</color>
+    <color name="scrimEndGradient">#50000000</color>
+</resources>

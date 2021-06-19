@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.Theme.h6" parent="">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Theme.Subtitle1" parent="">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Theme.Subtitle2" parent="">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Theme.Body1" parent="">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Theme.Body2" parent="">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.Theme.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
+    </style>
+
+</resources>

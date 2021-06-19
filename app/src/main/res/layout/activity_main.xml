@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".ui.MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        style="@style/AppTheme.AppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed|enterAlways">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:paddingStart="@dimen/margin_edge_toolbar"
+            android:paddingEnd="@dimen/margin_edge_toolbar">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_profile"
+                android:layout_width="@dimen/dimen_profile_main"
+                android:layout_height="@dimen/dimen_profile_main"
+                android:layout_gravity="center_vertical|start"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackgroundBorderless"
+                android:padding="@dimen/micro_padding"
+                android:src="@drawable/ic_profile"
+                tools:src="@tools:sample/avatars[10]" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.Theme.h6" />
+
+        </FrameLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/video_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/gutter_default"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/item_video" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/video_upload_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginBottom="@dimen/margin_default"
+        android:src="@drawable/ic_baseline_add_24"
+        app:backgroundTint="@color/colorBrand"
+        app:layout_anchor="@+id/video_recycler"
+        app:layout_anchorGravity="end|bottom" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
