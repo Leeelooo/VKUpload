@@ -3,7 +3,9 @@ package com.leeloo.vkupload.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.leeloo.vkupload.R
@@ -16,7 +18,7 @@ import com.vk.api.sdk.auth.VKScope
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var videoAdapter: VideoAdapter
 
     private val tokenTracker = object : VKTokenExpiredHandler {
@@ -67,6 +69,17 @@ class MainActivity : AppCompatActivity() {
             .load(viewState.user?.photoURL)
             .fallback(R.drawable.ic_profile)
             .into(main_profile)
+
+        val state = when {
+            !viewState.isUserLoggedIn -> RecyclerState.NOT_LOGGED
+            viewState.isLoading -> RecyclerState.LOADING
+            viewState.isError -> RecyclerState.ERROR
+            viewState.data.isEmpty() -> RecyclerState.EMPTY
+            else -> RecyclerState.VIDEO
+        }
+
+        video_upload_fab.isVisible = viewState.isUserLoggedIn
+        videoAdapter.updateData(viewState.data, state)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

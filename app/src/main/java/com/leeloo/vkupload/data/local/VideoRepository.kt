@@ -17,6 +17,7 @@ interface VideoRepository {
     fun createNewEntry(uri: Uri, title: String, sessionUUID: UUID)
     fun updateEntryTransferredSize(id: Long, transferredSize: Long)
     fun deleteEntry(id: Long)
+    fun deleteAll()
     fun closeConnections()
 
     companion object {
@@ -38,14 +39,14 @@ class VideoRepositoryImpl(
     override val liveData: LiveData<ModelState>
         get() = _liveData
 
-    private val dbHelper = VideoDBHelper(context)
+    private val dbHelper = VideoDBHelper(context).also { it.writableDatabase }
 
     override fun getVideos() {
         _liveData.value = ModelState.VideosLoading
         val db = dbHelper.readableDatabase
 
         val cursor = db.query(
-            VideoDBHelper.DATABASE_NAME,
+            VideoContract.VideoEntry.TABLE_NAME,
             projection,
             null,
             null,
@@ -113,6 +114,12 @@ class VideoRepositoryImpl(
         }
     }
 
+    override fun deleteAll() {
+        dbHelper.writableDatabase
+            .rawQuery(VideoContract.SQL_DELETE_ENTRIES, null)
+            .close()
+    }
+
     override fun closeConnections() {
         dbHelper.close()
     }
@@ -122,7 +129,7 @@ class VideoRepositoryImpl(
 
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
         val cursor = db.query(
-            VideoDBHelper.DATABASE_NAME,
+            VideoContract.VideoEntry.TABLE_NAME,
             projection,
             selection,
             arrayOf("$id"),
