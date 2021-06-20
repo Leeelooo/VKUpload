@@ -8,6 +8,7 @@ import com.leeloo.vkupload.R
 import com.leeloo.vkupload.utils.SmoothOutlineProvider
 import com.leeloo.vkupload.utils.formatFileSize
 import com.leeloo.vkupload.vo.LocalVideo
+import com.leeloo.vkupload.vo.VideoUploadStatus
 import kotlinx.android.synthetic.main.item_video.view.*
 
 class VideoViewHolder(
@@ -19,6 +20,7 @@ class VideoViewHolder(
     }
     private val title = view.video_title
     private val progress = view.video_upload_progress
+    private val statusIcon = view.video_upload_status
 
     private lateinit var data: LocalVideo
 
@@ -34,6 +36,16 @@ class VideoViewHolder(
             item.transferredSize.formatFileSize(progress.context),
             item.totalSize.formatFileSize(progress.context)
         )
+
+        val statusIconResource = when (item.status) {
+            VideoUploadStatus.PENDING -> R.drawable.ic_outline_pending_24
+            VideoUploadStatus.LOADING -> R.drawable.ic_outline_save_alt_24
+            VideoUploadStatus.ERROR -> R.drawable.ic_outline_error_outline_24
+            VideoUploadStatus.FINISHED -> R.drawable.ic_outline_done_24
+        }
+        Glide.with(statusIcon)
+            .load(statusIconResource)
+            .into(statusIcon)
     }
 
     fun clear() {

@@ -26,7 +26,7 @@
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.Theme.Subtitle1"
         android:textColor="@color/colorOnBackground"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/video_upload_status"
         app:layout_constraintStart_toEndOf="@+id/video_preview"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Why I Live a Simple Life" />
@@ -41,10 +41,20 @@
         android:textAppearance="@style/TextAppearance.Theme.Body1"
         android:textColor="@color/colorOnBackgroundMedium"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/video_upload_status"
         app:layout_constraintStart_toEndOf="@+id/video_preview"
         app:layout_constraintTop_toBottomOf="@+id/video_title"
         app:layout_constraintVertical_bias="0.0"
         tools:text="2.4 MB / 102 MB" />
+
+    <ImageView
+        android:id="@+id/video_upload_status"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_outline_done_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
