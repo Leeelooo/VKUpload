@@ -11,7 +11,6 @@ import com.vk.api.sdk.VKApiCallback
 interface UserRepository {
     val liveData: LiveData<ModelState>
     fun userLoggedIn()
-    fun clear()
 
     companion object {
         private lateinit var _INSTANCE: UserRepository
@@ -32,10 +31,6 @@ class UserRepositoryImpl : UserRepository {
     override fun userLoggedIn() {
         _liveData.value = ModelState.UserLoggedIn
         requestUser()
-    }
-
-    override fun clear() {
-        _liveData.value = ModelState.Init
     }
 
     private fun requestUser(

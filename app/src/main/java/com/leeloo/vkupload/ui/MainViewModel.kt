@@ -34,8 +34,8 @@ class MainViewModel : ViewModel() {
     }
 
     fun onLogout() {
-        userRepository.clear()
         videoRepository.deleteAll()
+        _modelState.value = ModelState.Init
     }
 
     fun onReload() {
@@ -56,18 +56,6 @@ class MainViewModel : ViewModel() {
 
     fun onVideoSelected(onDeviceVideo: OnDeviceVideo) {
         _modelState.value = ModelState.VideoSelected(onDeviceVideo)
-    }
-
-    fun onPermissionGranted() {
-
-    }
-
-    fun onPermissionNotGranted() {
-
-    }
-
-    fun onPermissionExists() {
-
     }
 
 }
