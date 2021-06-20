@@ -10,8 +10,9 @@ class GetUserRequest(
 ) : VKRequest<VKUser>("users.get") {
 
     init {
-        if (userIds.isNotEmpty())
+        if (userIds.isNotEmpty()) {
             addParam("user_ids", userIds)
+        }
         addParam("fields", fields)
     }
 

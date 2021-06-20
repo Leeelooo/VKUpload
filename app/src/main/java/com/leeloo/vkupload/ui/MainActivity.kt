@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -108,11 +107,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomSheetDialog.setOnShowListener {
-            bottomSheetDialog
-            Handler().postDelayed({
+            bottomSheetDialog.bottom_sheet.post {
                 val d = it as BottomSheetDialog
                 d.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }, 0)
+            }
         }
     }
 

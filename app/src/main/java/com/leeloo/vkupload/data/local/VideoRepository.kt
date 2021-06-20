@@ -9,6 +9,7 @@ import com.leeloo.vkupload.ui.ModelState
 import com.leeloo.vkupload.vo.LocalVideo
 import com.leeloo.vkupload.vo.VKVideoUpload
 import java.util.*
+import kotlin.concurrent.thread
 
 interface VideoRepository {
     val liveData: LiveData<ModelState>
@@ -32,47 +33,43 @@ interface VideoRepository {
 }
 
 class VideoRepositoryImpl(
-    private val context: Context
+    context: Context
 ) : VideoRepository {
     private val _liveData = MutableLiveData<ModelState>()
     override val liveData: LiveData<ModelState>
         get() = _liveData
 
-    private val dbHelper = VideoDBHelper(context).also { it.writableDatabase }
+    private val dbHelper = VideoDBHelper(context)
 
     override fun getVideos() {
         _liveData.value = ModelState.VideosLoading
-        val db = dbHelper.readableDatabase
+        thread {
+            dbHelper.readableDatabase.query(
+                VideoContract.VideoEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+            ).use {
+                try {
+                    val videos = mutableListOf<VKVideoUpload>()
+                    if (it.moveToNext()) {
+                        do {
+                            videos.add(it.getVideo())
+                        } while (it.moveToNext())
+                    }
 
-        val cursor = db.query(
-            VideoContract.VideoEntry.TABLE_NAME,
-            projection,
-            null,
-            null,
-            null,
-            null,
-            null
-        )
-
-        try {
-            val videos = mutableListOf<VKVideoUpload>()
-            if (cursor.moveToNext()) {
-                do {
-                    videos.add(cursor.getVideo())
-                } while (cursor.moveToNext())
+                    _liveData.postValue(ModelState.VideosLoaded(videos))
+                } catch (e: Exception) {
+                    _liveData.postValue(ModelState.VideosLoadingFailed(e))
+                }
             }
-
-            _liveData.value = ModelState.VideosLoaded(videos)
-        } catch (e: Exception) {
-            _liveData.value = ModelState.VideosLoadingFailed(e)
-        } finally {
-            cursor.close()
         }
-
     }
 
     override fun createNewEntry(localVideo: LocalVideo, title: String, sessionUUID: UUID) {
-        val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(VideoContract.VideoEntry.COLUMN_NAME_TITLE, title)
             put(VideoContract.VideoEntry.COLUMN_NAME_URI, localVideo.uri.toString())
@@ -80,22 +77,25 @@ class VideoRepositoryImpl(
             put(VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE, 0L)
             put(VideoContract.VideoEntry.COLUMN_NAME_SESSION_UUID, sessionUUID.toString())
         }
-        val videoId = db.insert(VideoContract.VideoEntry.TABLE_NAME, null, values)
+        thread {
+            val videoId =
+                dbHelper.writableDatabase.insert(VideoContract.VideoEntry.TABLE_NAME, null, values)
 
-        val video = getVideo(videoId)
-        if (video != null) {
-            _liveData.postValue(ModelState.VideoUploadingStart(video))
+            val video = getVideo(videoId)
+            if (video != null) {
+                _liveData.postValue(ModelState.VideoUploadingStart(video))
+            }
         }
     }
 
+    //will be called from service uploader job, we don't want to create lots of threads
     override fun updateEntryTransferredSize(id: Long, transferredSize: Long) {
-        val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE, transferredSize)
         }
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
-        val updatedRows =
-            db.update(VideoContract.VideoEntry.TABLE_NAME, values, selection, arrayOf("$id"))
+        val updatedRows = dbHelper.writableDatabase
+            .update(VideoContract.VideoEntry.TABLE_NAME, values, selection, arrayOf("$id"))
 
         val video = getVideo(id)
         if (updatedRows == 1 && video != null) {
@@ -103,10 +103,11 @@ class VideoRepositoryImpl(
         }
     }
 
+    //will be called from service uploader job, we don't want to create lots of threads
     override fun deleteEntry(id: Long) {
-        val db = dbHelper.writableDatabase
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
-        val deletedRows = db.delete(VideoContract.VideoEntry.TABLE_NAME, selection, arrayOf("$id"))
+        val deletedRows = dbHelper.writableDatabase
+            .delete(VideoContract.VideoEntry.TABLE_NAME, selection, arrayOf("$id"))
 
         if (deletedRows == 1) {
             _liveData.postValue(ModelState.DeleteVideo(id))
@@ -114,9 +115,11 @@ class VideoRepositoryImpl(
     }
 
     override fun deleteAll() {
-        dbHelper.writableDatabase
-            .rawQuery(VideoContract.SQL_DELETE_ENTRIES, null)
-            .close()
+        thread {
+            dbHelper.writableDatabase
+                .rawQuery(VideoContract.SQL_DELETE_ENTRIES, null)
+                .close()
+        }
     }
 
     override fun closeConnections() {
@@ -124,10 +127,8 @@ class VideoRepositoryImpl(
     }
 
     private fun getVideo(id: Long): VKVideoUpload? {
-        val db = dbHelper.readableDatabase
-
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
-        val cursor = db.query(
+        val cursor = dbHelper.readableDatabase.query(
             VideoContract.VideoEntry.TABLE_NAME,
             projection,
             selection,
