@@ -1,8 +1,6 @@
 package com.leeloo.vkupload.ui
 
-import android.Manifest
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -39,22 +37,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.onVideoSelected(getVideo(this, it))
     }
 
-    private val requestPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                viewModel.onPermissionGranted()
-            } else {
-                viewModel.onPermissionNotGranted()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            requestPermission.launch(Manifest.permission.ACCESS_MEDIA_LOCATION)
-        }
         if (savedInstanceState == null && viewModel.viewState.value == null) {
             if (VK.isLoggedIn()) {
                 viewModel.onLogin()
@@ -115,15 +101,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun render(viewState: ViewState) {
-        if (viewState.localVideo != null) {
+        if (viewState.onDeviceVideo != null) {
             Glide.with(bottomSheetDialog.choosen_video_preview)
                 .asBitmap()
-                .load(viewState.localVideo.uri)
+                .load(viewState.onDeviceVideo.uri)
                 .override(500)
                 .into(bottomSheetDialog.choosen_video_preview)
             if (!bottomSheetDialog.isShowing) {
                 bottomSheetDialog.show()
-                bottomSheetDialog.title_edit.setText(viewState.localVideo.title)
+                bottomSheetDialog.title_edit.setText(viewState.onDeviceVideo.title)
             }
         } else {
             Glide.with(bottomSheetDialog.choosen_video_preview)

@@ -9,12 +9,12 @@ class VideoDBHelper(
 ) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(VideoContract.SQL_CREATE_ENTRIES)
+        db.execSQL(VideoContract.VideoEntry.SQL_CREATE_ENTRIES)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion != newVersion) {
-            db.execSQL(VideoContract.SQL_DELETE_ENTRIES)
+            db.execSQL(VideoContract.VideoEntry.SQL_DELETE_ENTRIES)
             onCreate(db)
         }
     }

@@ -7,7 +7,7 @@ import com.google.android.material.button.MaterialButton
 import com.leeloo.vkupload.R
 import com.leeloo.vkupload.utils.SmoothOutlineProvider
 import com.leeloo.vkupload.utils.formatFileSize
-import com.leeloo.vkupload.vo.VKVideoUpload
+import com.leeloo.vkupload.vo.LocalVideo
 import kotlinx.android.synthetic.main.item_video.view.*
 
 class VideoViewHolder(
@@ -20,9 +20,9 @@ class VideoViewHolder(
     private val title = view.video_title
     private val progress = view.video_upload_progress
 
-    private lateinit var data: VKVideoUpload
+    private lateinit var data: LocalVideo
 
-    fun bind(item: VKVideoUpload) {
+    fun bind(item: LocalVideo) {
         data = item
 
         Glide.with(preview)

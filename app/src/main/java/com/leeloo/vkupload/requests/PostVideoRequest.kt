@@ -2,6 +2,7 @@ package com.leeloo.vkupload.requests
 
 import com.leeloo.vkupload.vo.RemoteVideoPost
 import com.vk.api.sdk.requests.VKRequest
+import org.json.JSONObject
 
 class PostVideoRequest(
     name: String,
@@ -45,4 +46,6 @@ class PostVideoRequest(
         addParam("compression", compression)
     }
 
+    override fun parse(r: JSONObject): RemoteVideoPost =
+        RemoteVideoPost.parse(r)
 }

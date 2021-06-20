@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.leeloo.vkupload.requests.GetUserRequest
 import com.leeloo.vkupload.ui.ModelState
-import com.leeloo.vkupload.vo.VKUser
+import com.leeloo.vkupload.vo.RemoteUser
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKApiCallback
 
@@ -43,14 +43,14 @@ class UserRepositoryImpl : UserRepository {
         fields: String = "photo_200"
     ) {
         VK.execute(
-            GetUserRequest(userIds, fields), object : VKApiCallback<VKUser> {
+            GetUserRequest(userIds, fields), object : VKApiCallback<RemoteUser> {
                 override fun fail(error: Exception) {
                     if (VK.isLoggedIn()) {
                         _liveData.postValue(ModelState.UserLoadingFailed(error))
                     }
                 }
 
-                override fun success(result: VKUser) {
+                override fun success(result: RemoteUser) {
                     _liveData.postValue(ModelState.UserLoaded(result))
                 }
             })

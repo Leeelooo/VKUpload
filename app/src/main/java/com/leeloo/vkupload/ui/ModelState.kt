@@ -1,8 +1,8 @@
 package com.leeloo.vkupload.ui
 
 import com.leeloo.vkupload.vo.LocalVideo
-import com.leeloo.vkupload.vo.VKUser
-import com.leeloo.vkupload.vo.VKVideoUpload
+import com.leeloo.vkupload.vo.OnDeviceVideo
+import com.leeloo.vkupload.vo.RemoteUser
 
 sealed class ModelState {
     abstract fun reduce(oldState: ViewState): ViewState
@@ -17,7 +17,7 @@ sealed class ModelState {
     }
 
     data class UserLoaded(
-        private val user: VKUser
+        private val user: RemoteUser
     ) : ModelState() {
         override fun reduce(oldState: ViewState) = oldState.userLoaded(user)
     }
@@ -33,7 +33,7 @@ sealed class ModelState {
     }
 
     data class VideosLoaded(
-        private val videos: List<VKVideoUpload>
+        private val videos: List<LocalVideo>
     ) : ModelState() {
         override fun reduce(oldState: ViewState) = oldState.videosLoaded(videos)
     }
@@ -45,13 +45,13 @@ sealed class ModelState {
     }
 
     data class VideoUpdated(
-        private val video: VKVideoUpload
+        private val video: LocalVideo
     ) : ModelState() {
         override fun reduce(oldState: ViewState): ViewState = oldState.updateVideo(video)
     }
 
     data class VideoUploadingStart(
-        private val video: VKVideoUpload
+        private val video: LocalVideo
     ) : ModelState() {
         override fun reduce(oldState: ViewState): ViewState = oldState.addVideo(video)
     }
@@ -63,10 +63,10 @@ sealed class ModelState {
     }
 
     data class VideoSelected(
-        private val localVideo: LocalVideo
+        private val onDeviceVideo: OnDeviceVideo
     ) : ModelState() {
         override fun reduce(oldState: ViewState): ViewState =
-            oldState.videoSelected(localVideo)
+            oldState.videoSelected(onDeviceVideo)
     }
 
     object DismissDialog : ModelState() {

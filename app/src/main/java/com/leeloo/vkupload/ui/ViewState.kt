@@ -1,16 +1,16 @@
 package com.leeloo.vkupload.ui
 
 import com.leeloo.vkupload.vo.LocalVideo
-import com.leeloo.vkupload.vo.VKUser
-import com.leeloo.vkupload.vo.VKVideoUpload
+import com.leeloo.vkupload.vo.OnDeviceVideo
+import com.leeloo.vkupload.vo.RemoteUser
 
 data class ViewState(
     val isUserLoggedIn: Boolean,
-    val user: VKUser?,
+    val user: RemoteUser?,
     val isLoading: Boolean,
     val isError: Boolean,
-    val data: List<VKVideoUpload>,
-    val localVideo: LocalVideo?
+    val data: List<LocalVideo>,
+    val onDeviceVideo: OnDeviceVideo?
 ) {
 
     fun userLogedIn() = ViewState(
@@ -19,16 +19,16 @@ data class ViewState(
         isLoading = false,
         isError = false,
         data = emptyList(),
-        localVideo = null
+        onDeviceVideo = null
     )
 
-    fun userLoaded(user: VKUser) = ViewState(
+    fun userLoaded(user: RemoteUser) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = user,
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
     fun userLoadingError() = ViewState(
@@ -37,7 +37,7 @@ data class ViewState(
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
     fun initialVideoLoading() = ViewState(
@@ -46,7 +46,7 @@ data class ViewState(
         isLoading = true,
         isError = false,
         data = emptyList(),
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
     fun initialVideoLoadingError() = ViewState(
@@ -55,19 +55,19 @@ data class ViewState(
         isLoading = false,
         isError = true,
         data = emptyList(),
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
-    fun videosLoaded(data: List<VKVideoUpload>) = ViewState(
+    fun videosLoaded(data: List<LocalVideo>) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = false,
         isError = false,
         data = data,
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
-    fun updateVideo(video: VKVideoUpload) = ViewState(
+    fun updateVideo(video: LocalVideo) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = false,
@@ -81,10 +81,10 @@ data class ViewState(
                 }
             }
         },
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
-    fun addVideo(video: VKVideoUpload) = ViewState(
+    fun addVideo(video: LocalVideo) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = false,
@@ -92,7 +92,7 @@ data class ViewState(
         data = this.data.toMutableList().apply {
             this.add(0, video)
         },
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
     fun deleteVideo(videoId: Long) = ViewState(
@@ -108,16 +108,16 @@ data class ViewState(
                 }
             }
         },
-        localVideo = this.localVideo
+        onDeviceVideo = this.onDeviceVideo
     )
 
-    fun videoSelected(localVideo: LocalVideo) = ViewState(
+    fun videoSelected(onDeviceVideo: OnDeviceVideo) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        localVideo = localVideo
+        onDeviceVideo = onDeviceVideo
     )
 
     fun dismissDialog() = ViewState(
@@ -126,7 +126,7 @@ data class ViewState(
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        localVideo = null
+        onDeviceVideo = null
     )
 
     companion object {
@@ -136,7 +136,7 @@ data class ViewState(
             isLoading = false,
             isError = false,
             data = emptyList(),
-            localVideo = null
+            onDeviceVideo = null
         )
     }
 

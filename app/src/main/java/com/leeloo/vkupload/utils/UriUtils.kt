@@ -3,7 +3,7 @@ package com.leeloo.vkupload.utils
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.leeloo.vkupload.vo.LocalVideo
+import com.leeloo.vkupload.vo.OnDeviceVideo
 
 private enum class Columns {
     COLUMN_VIDEO_SIZE,
@@ -15,11 +15,11 @@ private val requiredFields = mapOf(
     Columns.COLUMN_VIDEO_TITLE to MediaStore.MediaColumns.DISPLAY_NAME
 )
 
-fun getVideo(context: Context, uri: Uri): LocalVideo {
+fun getVideo(context: Context, uri: Uri): OnDeviceVideo {
     val cursor = getFileCursor(context, uri)
     return cursor.use {
         cursor?.moveToNext()
-        LocalVideo(
+        OnDeviceVideo(
             uri = uri,
             size = cursor?.getLong(cursor.getColumnIndexOrThrow(requiredFields[Columns.COLUMN_VIDEO_SIZE]))
                 ?: 0L,

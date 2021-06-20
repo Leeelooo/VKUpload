@@ -1,13 +1,13 @@
 package com.leeloo.vkupload.requests
 
-import com.leeloo.vkupload.vo.VKUser
+import com.leeloo.vkupload.vo.RemoteUser
 import com.vk.api.sdk.requests.VKRequest
 import org.json.JSONObject
 
 class GetUserRequest(
     userIds: IntArray,
     fields: String
-) : VKRequest<VKUser>("users.get") {
+) : VKRequest<RemoteUser>("users.get") {
 
     init {
         if (userIds.isNotEmpty()) {
@@ -16,6 +16,6 @@ class GetUserRequest(
         addParam("fields", fields)
     }
 
-    override fun parse(r: JSONObject) = VKUser.parse(r)
+    override fun parse(r: JSONObject) = RemoteUser.parse(r)
 
 }

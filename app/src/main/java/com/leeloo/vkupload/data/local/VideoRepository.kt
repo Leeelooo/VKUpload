@@ -7,15 +7,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.leeloo.vkupload.ui.ModelState
 import com.leeloo.vkupload.vo.LocalVideo
-import com.leeloo.vkupload.vo.VKVideoUpload
-import java.util.*
+import com.leeloo.vkupload.vo.OnDeviceVideo
+import com.leeloo.vkupload.vo.VideoUploadStatus
 import kotlin.concurrent.thread
 
 interface VideoRepository {
     val liveData: LiveData<ModelState>
     fun getVideos()
-    fun createNewEntry(localVideo: LocalVideo, title: String, sessionUUID: UUID)
+    fun createNewEntry(onDeviceVideo: OnDeviceVideo, title: String)
     fun updateEntryTransferredSize(id: Long, transferredSize: Long)
+    fun updateEntryStatus(id: Long, newState: VideoUploadStatus)
     fun deleteEntry(id: Long)
     fun deleteAll()
     fun closeConnections()
@@ -46,7 +47,7 @@ class VideoRepositoryImpl(
         thread {
             dbHelper.readableDatabase.query(
                 VideoContract.VideoEntry.TABLE_NAME,
-                projection,
+                null,
                 null,
                 null,
                 null,
@@ -54,7 +55,7 @@ class VideoRepositoryImpl(
                 null
             ).use {
                 try {
-                    val videos = mutableListOf<VKVideoUpload>()
+                    val videos = mutableListOf<LocalVideo>()
                     if (it.moveToNext()) {
                         do {
                             videos.add(it.getVideo())
@@ -69,13 +70,13 @@ class VideoRepositoryImpl(
         }
     }
 
-    override fun createNewEntry(localVideo: LocalVideo, title: String, sessionUUID: UUID) {
+    override fun createNewEntry(onDeviceVideo: OnDeviceVideo, title: String) {
         val values = ContentValues().apply {
             put(VideoContract.VideoEntry.COLUMN_NAME_TITLE, title)
-            put(VideoContract.VideoEntry.COLUMN_NAME_URI, localVideo.uri.toString())
-            put(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE, localVideo.size)
+            put(VideoContract.VideoEntry.COLUMN_NAME_URI, onDeviceVideo.uri.toString())
+            put(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE, onDeviceVideo.size)
             put(VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE, 0L)
-            put(VideoContract.VideoEntry.COLUMN_NAME_SESSION_UUID, sessionUUID.toString())
+            put(VideoContract.VideoEntry.COLUMN_NAME_STATUS, VideoUploadStatus.PENDING.ordinal)
         }
         thread {
             val videoId =
@@ -104,6 +105,21 @@ class VideoRepositoryImpl(
     }
 
     //will be called from service uploader job, we don't want to create lots of threads
+    override fun updateEntryStatus(id: Long, newState: VideoUploadStatus) {
+        val values = ContentValues().apply {
+            put(VideoContract.VideoEntry.COLUMN_NAME_STATUS, newState.ordinal)
+        }
+        val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
+        val updatedRows = dbHelper.writableDatabase
+            .update(VideoContract.VideoEntry.TABLE_NAME, values, selection, arrayOf("$id"))
+
+        val video = getVideo(id)
+        if (updatedRows == 1 && video != null) {
+            _liveData.postValue(ModelState.VideoUpdated(video))
+        }
+    }
+
+    //will be called from service uploader job, we don't want to create lots of threads
     override fun deleteEntry(id: Long) {
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
         val deletedRows = dbHelper.writableDatabase
@@ -117,7 +133,7 @@ class VideoRepositoryImpl(
     override fun deleteAll() {
         thread {
             dbHelper.writableDatabase
-                .rawQuery(VideoContract.SQL_DELETE_ENTRIES, null)
+                .rawQuery(VideoContract.VideoEntry.SQL_DELETE_ENTRIES, null)
                 .close()
         }
     }
@@ -126,11 +142,11 @@ class VideoRepositoryImpl(
         dbHelper.close()
     }
 
-    private fun getVideo(id: Long): VKVideoUpload? {
+    private fun getVideo(id: Long): LocalVideo? {
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
         val cursor = dbHelper.readableDatabase.query(
             VideoContract.VideoEntry.TABLE_NAME,
-            projection,
+            null,
             selection,
             arrayOf("$id"),
             null,
@@ -151,25 +167,28 @@ class VideoRepositoryImpl(
     }
 
     companion object {
-        private val projection = arrayOf(
-            VideoContract.VideoEntry.COLUMN_NAME_ID,
-            VideoContract.VideoEntry.COLUMN_NAME_TITLE,
-            VideoContract.VideoEntry.COLUMN_NAME_URI,
-            VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE,
-            VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE,
-            VideoContract.VideoEntry.COLUMN_NAME_SESSION_UUID
-        )
-
         private fun Cursor.getVideo() =
-            VKVideoUpload(
+            LocalVideo(
                 id = getLong(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_ID)),
                 uri = getString(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_URI)),
                 title = getString(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_TITLE)),
                 totalSize = getLong(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE)),
                 transferredSize = getLong(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE)),
-                sessionUUID = UUID.fromString(
-                    getString(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_SESSION_UUID))
-                )
+                status = when (getInt(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_STATUS))) {
+                    VideoUploadStatus.PENDING.ordinal -> VideoUploadStatus.PENDING
+                    VideoUploadStatus.ERROR.ordinal -> VideoUploadStatus.ERROR
+                    VideoUploadStatus.LOADING.ordinal -> VideoUploadStatus.LOADING
+                    VideoUploadStatus.FINISHED.ordinal -> VideoUploadStatus.FINISHED
+                    else -> throw IllegalStateException(
+                        "Unknown state ${
+                            getInt(
+                                getColumnIndex(
+                                    VideoContract.VideoEntry.COLUMN_NAME_STATUS
+                                )
+                            )
+                        }"
+                    )
+                }
             )
 
     }

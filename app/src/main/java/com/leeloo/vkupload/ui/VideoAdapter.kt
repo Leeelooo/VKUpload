@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.leeloo.vkupload.R
 import com.leeloo.vkupload.utils.VideoDiffCallback
-import com.leeloo.vkupload.vo.VKVideoUpload
+import com.leeloo.vkupload.vo.LocalVideo
 
 enum class RecyclerState(val viewType: Int) {
     VIDEO(0),
@@ -20,7 +20,7 @@ class VideoAdapter(
     private val loginListener: () -> Unit,
     private val reloadListener: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items: MutableList<VKVideoUpload> = mutableListOf()
+    private val items: MutableList<LocalVideo> = mutableListOf()
     private var state: RecyclerState = RecyclerState.NOT_LOGGED
 
     private val layoutId: Int
@@ -40,7 +40,7 @@ class VideoAdapter(
                 else -> R.id.retry_button
             }
 
-    fun updateData(items: List<VKVideoUpload>, state: RecyclerState) {
+    fun updateData(items: List<LocalVideo>, state: RecyclerState) {
         if (state == RecyclerState.VIDEO) {
             if (this.state == RecyclerState.VIDEO) {
                 this.state = state

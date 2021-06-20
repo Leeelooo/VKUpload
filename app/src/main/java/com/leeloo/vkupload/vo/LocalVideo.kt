@@ -1,9 +1,17 @@
 package com.leeloo.vkupload.vo
 
-import android.net.Uri
-
 data class LocalVideo(
-    val uri: Uri,
-    val size: Long,
-    val title: String
+    val id: Long,
+    val uri: String,
+    val title: String,
+    val totalSize: Long,
+    val transferredSize: Long,
+    val status: VideoUploadStatus
 )
+
+enum class VideoUploadStatus {
+    PENDING,
+    LOADING,
+    ERROR,
+    FINISHED
+}

@@ -5,8 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.leeloo.vkupload.data.local.VideoRepository
 import com.leeloo.vkupload.data.remote.UserRepository
-import com.leeloo.vkupload.vo.LocalVideo
-import java.util.*
+import com.leeloo.vkupload.vo.OnDeviceVideo
 
 class MainViewModel : ViewModel() {
     private val videoRepository = VideoRepository.getInstance()
@@ -49,15 +48,14 @@ class MainViewModel : ViewModel() {
 
     fun onSendClicked(title: String) {
         videoRepository.createNewEntry(
-            localVideo = _viewState.value!!.localVideo!!,
-            title = title,
-            sessionUUID = UUID.randomUUID()
+            onDeviceVideo = _viewState.value!!.onDeviceVideo!!,
+            title = title
         )
         _modelState.value = ModelState.DismissDialog
     }
 
-    fun onVideoSelected(localVideo: LocalVideo) {
-        _modelState.value = ModelState.VideoSelected(localVideo)
+    fun onVideoSelected(onDeviceVideo: OnDeviceVideo) {
+        _modelState.value = ModelState.VideoSelected(onDeviceVideo)
     }
 
     fun onPermissionGranted() {
