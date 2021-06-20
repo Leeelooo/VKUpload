@@ -16,6 +16,7 @@ class App : Application() {
         VideoRepository.createInstance(this)
         VK.setConfig(
             VKApiConfig(
+                appId = 7881815, // hello? u don't want to read resources, right?
                 version = "5.131",
                 lang = Locale.getDefault().language,
                 context = this,

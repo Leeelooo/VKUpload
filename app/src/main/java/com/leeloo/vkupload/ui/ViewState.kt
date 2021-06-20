@@ -1,18 +1,16 @@
 package com.leeloo.vkupload.ui
 
-import android.net.Uri
+import com.leeloo.vkupload.vo.LocalVideo
 import com.leeloo.vkupload.vo.VKUser
-import com.leeloo.vkupload.vo.Video
+import com.leeloo.vkupload.vo.VKVideoUpload
 
 data class ViewState(
     val isUserLoggedIn: Boolean,
     val user: VKUser?,
     val isLoading: Boolean,
     val isError: Boolean,
-    val data: List<Video>,
-    val isDialogOpened: Boolean,
-    val videoUri: Uri?,
-    val videoTitle: String
+    val data: List<VKVideoUpload>,
+    val localVideo: LocalVideo?
 ) {
 
     fun userLogedIn() = ViewState(
@@ -21,9 +19,7 @@ data class ViewState(
         isLoading = false,
         isError = false,
         data = emptyList(),
-        isDialogOpened = false,
-        videoUri = null,
-        videoTitle = ""
+        localVideo = null
     )
 
     fun userLoaded(user: VKUser) = ViewState(
@@ -32,9 +28,7 @@ data class ViewState(
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
     fun userLoadingError() = ViewState(
@@ -43,9 +37,7 @@ data class ViewState(
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
     fun initialVideoLoading() = ViewState(
@@ -54,9 +46,7 @@ data class ViewState(
         isLoading = true,
         isError = false,
         data = emptyList(),
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
     fun initialVideoLoadingError() = ViewState(
@@ -65,23 +55,19 @@ data class ViewState(
         isLoading = false,
         isError = true,
         data = emptyList(),
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
-    fun videosLoaded(data: List<Video>) = ViewState(
+    fun videosLoaded(data: List<VKVideoUpload>) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = false,
         isError = false,
         data = data,
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
-    fun updateVideo(video: Video) = ViewState(
+    fun updateVideo(video: VKVideoUpload) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = false,
@@ -95,12 +81,10 @@ data class ViewState(
                 }
             }
         },
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
-    fun addVideo(video: Video) = ViewState(
+    fun addVideo(video: VKVideoUpload) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = false,
@@ -108,9 +92,7 @@ data class ViewState(
         data = this.data.toMutableList().apply {
             this.add(0, video)
         },
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
     fun deleteVideo(videoId: Long) = ViewState(
@@ -126,31 +108,25 @@ data class ViewState(
                 }
             }
         },
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = this.localVideo
     )
 
-    fun videoSelected(videoUri: Uri?) = ViewState(
+    fun videoSelected(localVideo: LocalVideo) = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = localVideo
     )
 
-    fun titleChanged(title: String) = ViewState(
+    fun dismissDialog() = ViewState(
         isUserLoggedIn = this.isUserLoggedIn,
         user = this.user,
         isLoading = this.isLoading,
         isError = this.isError,
         data = this.data,
-        isDialogOpened = this.isDialogOpened,
-        videoUri = this.videoUri,
-        videoTitle = this.videoTitle
+        localVideo = null
     )
 
     companion object {
@@ -160,9 +136,7 @@ data class ViewState(
             isLoading = false,
             isError = false,
             data = emptyList(),
-            isDialogOpened = false,
-            videoUri = null,
-            videoTitle = ""
+            localVideo = null
         )
     }
 

@@ -7,8 +7,8 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.leeloo.vkupload.ui.ModelState
-import com.leeloo.vkupload.utils.getSize
-import com.leeloo.vkupload.vo.Video
+import com.leeloo.vkupload.utils.getFileSize
+import com.leeloo.vkupload.vo.VKVideoUpload
 import java.util.*
 
 interface VideoRepository {
@@ -56,7 +56,7 @@ class VideoRepositoryImpl(
         )
 
         try {
-            val videos = mutableListOf<Video>()
+            val videos = mutableListOf<VKVideoUpload>()
             if (cursor.moveToNext()) {
                 do {
                     videos.add(cursor.getVideo())
@@ -77,7 +77,7 @@ class VideoRepositoryImpl(
         val values = ContentValues().apply {
             put(VideoContract.VideoEntry.COLUMN_NAME_TITLE, title)
             put(VideoContract.VideoEntry.COLUMN_NAME_URI, uri.toString())
-            put(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE, getSize(context, uri))
+            put(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE, getFileSize(context, uri))
             put(VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE, 0L)
             put(VideoContract.VideoEntry.COLUMN_NAME_SESSION_UUID, sessionUUID.toString())
         }
@@ -124,7 +124,7 @@ class VideoRepositoryImpl(
         dbHelper.close()
     }
 
-    private fun getVideo(id: Long): Video? {
+    private fun getVideo(id: Long): VKVideoUpload? {
         val db = dbHelper.readableDatabase
 
         val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
@@ -161,7 +161,7 @@ class VideoRepositoryImpl(
         )
 
         private fun Cursor.getVideo() =
-            Video(
+            VKVideoUpload(
                 id = getLong(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_ID)),
                 uri = getString(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_URI)),
                 title = getString(getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME_TITLE)),

@@ -7,13 +7,14 @@
 
     <ImageView
         android:id="@+id/video_preview"
-        android:layout_width="100dp"
+        android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_marginStart="16dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/backgrounds/scenic"/>
+        tools:src="@tools:sample/backgrounds/scenic" />
 
     <TextView
         android:id="@+id/video_title"

@@ -6,7 +6,8 @@ import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.leeloo.vkupload.R
 import com.leeloo.vkupload.utils.SmoothOutlineProvider
-import com.leeloo.vkupload.vo.Video
+import com.leeloo.vkupload.utils.formatFileSize
+import com.leeloo.vkupload.vo.VKVideoUpload
 import kotlinx.android.synthetic.main.item_video.view.*
 
 class VideoViewHolder(
@@ -14,13 +15,14 @@ class VideoViewHolder(
 ) : RecyclerView.ViewHolder(view) {
     private val preview = view.video_preview.apply {
         outlineProvider = SmoothOutlineProvider
+        clipToOutline = true
     }
     private val title = view.video_title
     private val progress = view.video_upload_progress
 
-    private lateinit var data: Video
+    private lateinit var data: VKVideoUpload
 
-    fun bind(item: Video) {
+    fun bind(item: VKVideoUpload) {
         data = item
 
         Glide.with(preview)
@@ -29,8 +31,8 @@ class VideoViewHolder(
         title.text = item.title
         progress.text = progress.resources.getString(
             R.string.text_video_uploading_progress,
-            item.transferredSize.toString(),
-            item.totalSize.toString()
+            item.transferredSize.formatFileSize(progress.context),
+            item.totalSize.formatFileSize(progress.context)
         )
     }
 

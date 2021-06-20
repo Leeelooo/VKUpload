@@ -2,13 +2,19 @@
     <string name="app_name">VKUpload</string>
 
     <string name="text_initial_loading_error">Error loading</string>
-    <string name="text_initial_loading_retry">Retry</string>
-    <string name="text_paging_loading_error">Error loading</string>
-    <string name="text_paging_loading_retry">Retry</string>
+    <string name="button_text_initial_loading_retry">Retry</string>
     <string name="text_welcome_message">Click Profile or button below to</string>
-    <string name="button_text">Log in with VK</string>
+    <string name="button_text_login">Log in with VK</string>
     <string name="text_item_empty">No data</string>
     
     <string name="text_video_uploading_progress">%s / %s</string>
-    
+    <string name="title_bottom_sheet">Share Video</string>
+    <string name="hint_video_title_edit">Title</string>
+    <string name="button_text_share">Share</string>
+
+    <string name="filesize_bytes">%.1f B</string>
+    <string name="filesize_kilobytes">%.1f KB</string>
+    <string name="filesize_megabytes">%.1f MB</string>
+    <string name="filesize_gigabytes">%.1f GB</string>
+
 </resources>

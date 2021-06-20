@@ -1,11 +1,11 @@
 package com.leeloo.vkupload.ui
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.leeloo.vkupload.data.local.VideoRepository
 import com.leeloo.vkupload.data.remote.UserRepository
+import com.leeloo.vkupload.vo.LocalVideo
 import java.util.*
 
 class MainViewModel : ViewModel() {
@@ -44,28 +44,33 @@ class MainViewModel : ViewModel() {
     }
 
     fun onDismiss() {
-
+        _modelState.value = ModelState.DismissDialog
     }
 
-    fun onSendClicked() {
+    fun onSendClicked(title: String) {
         videoRepository.createNewEntry(
-            uri = _viewState.value!!.videoUri!!,
-            title = _viewState.value!!.videoTitle,
+            uri = _viewState.value!!.localVideo!!.uri,
+            title = title,
             sessionUUID = UUID.randomUUID()
         )
+        _modelState.value = ModelState.DismissDialog
     }
 
-    fun onVideoSelected(videoUri: Uri?) {
-        _modelState.value = ModelState.VideoSelected(videoUri)
+    fun onVideoSelected(localVideo: LocalVideo) {
+        _modelState.value = ModelState.VideoSelected(localVideo)
     }
 
-    fun onVideoNameChanged(videoName: String) {
-        _modelState.value = ModelState.VideoTitleChanged(videoName)
+    fun onPermissionGranted() {
+
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        videoRepository.closeConnections()
+    fun onPermissionNotGranted() {
+
     }
+
+    fun onPermissionExists() {
+
+    }
+
 }
 

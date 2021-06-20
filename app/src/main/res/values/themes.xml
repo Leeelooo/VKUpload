@@ -28,16 +28,21 @@
         <item name="popupTheme">@style/Theme.VKUpload.PopupTheme</item>
     </style>
 
+    <style name="Theme.VKUpload.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorBrand</item>
+        <item name="android:textAppearance">@style/TextAppearance.Theme.Button</item>
+    </style>
+
     <style name="Theme.VKUpload.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textAppearance">@style/TextAppearance.Theme.Button</item>
         <item name="android:textColor">@color/colorOnBackgroundMedium</item>
     </style>
 
-
-    <style name="Theme.VKUpload.LoginButton" parent="Theme.VKUpload.TextButton">
-        <item name="android:textAppearance">@style/TextAppearance.Theme.Button</item>
-        <item name="android:textColor">@color/colorBrand</item>
+    <style name="Theme.VKUpload.InputField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">@color/colorOnBackgroundMedium</item>
+        <item name="android:textColor">@color/colorOnBackground</item>
+        <item name="hintEnabled">false</item>
+        <item name="errorIconDrawable">@null</item>
     </style>
-
 
 </resources>

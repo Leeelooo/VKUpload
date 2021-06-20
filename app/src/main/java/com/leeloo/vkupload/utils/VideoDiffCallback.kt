@@ -1,11 +1,11 @@
 package com.leeloo.vkupload.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.leeloo.vkupload.vo.Video
+import com.leeloo.vkupload.vo.VKVideoUpload
 
 class VideoDiffCallback(
-    private val oldList: List<Video>,
-    private val newList: List<Video>
+    private val oldList: List<VKVideoUpload>,
+    private val newList: List<VKVideoUpload>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldList.size

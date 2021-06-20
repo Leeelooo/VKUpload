@@ -21,12 +21,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        style="@style/Theme.VKUpload.LoginButton"
+        style="@style/Theme.VKUpload.TextButton"
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_default"
-        android:text="@string/button_text"
+        android:text="@string/button_text_login"
+        android:textColor="@color/colorBrand"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
