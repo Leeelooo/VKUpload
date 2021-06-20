@@ -3,18 +3,17 @@ package com.leeloo.vkupload.data.local
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.leeloo.vkupload.ui.ModelState
-import com.leeloo.vkupload.utils.getFileSize
+import com.leeloo.vkupload.vo.LocalVideo
 import com.leeloo.vkupload.vo.VKVideoUpload
 import java.util.*
 
 interface VideoRepository {
     val liveData: LiveData<ModelState>
     fun getVideos()
-    fun createNewEntry(uri: Uri, title: String, sessionUUID: UUID)
+    fun createNewEntry(localVideo: LocalVideo, title: String, sessionUUID: UUID)
     fun updateEntryTransferredSize(id: Long, transferredSize: Long)
     fun deleteEntry(id: Long)
     fun deleteAll()
@@ -72,12 +71,12 @@ class VideoRepositoryImpl(
 
     }
 
-    override fun createNewEntry(uri: Uri, title: String, sessionUUID: UUID) {
+    override fun createNewEntry(localVideo: LocalVideo, title: String, sessionUUID: UUID) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(VideoContract.VideoEntry.COLUMN_NAME_TITLE, title)
-            put(VideoContract.VideoEntry.COLUMN_NAME_URI, uri.toString())
-            put(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE, getFileSize(context, uri))
+            put(VideoContract.VideoEntry.COLUMN_NAME_URI, localVideo.uri.toString())
+            put(VideoContract.VideoEntry.COLUMN_NAME_TOTAL_SIZE, localVideo.size)
             put(VideoContract.VideoEntry.COLUMN_NAME_TRANSFERRED_SIZE, 0L)
             put(VideoContract.VideoEntry.COLUMN_NAME_SESSION_UUID, sessionUUID.toString())
         }

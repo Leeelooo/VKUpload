@@ -49,7 +49,7 @@ class MainViewModel : ViewModel() {
 
     fun onSendClicked(title: String) {
         videoRepository.createNewEntry(
-            uri = _viewState.value!!.localVideo!!.uri,
+            localVideo = _viewState.value!!.localVideo!!,
             title = title,
             sessionUUID = UUID.randomUUID()
         )
