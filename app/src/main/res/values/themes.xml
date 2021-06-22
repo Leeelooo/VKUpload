@@ -13,6 +13,7 @@
         <item name="android:navigationBarColor" tools:targetApi="o_mr1">
             @color/colorPrimaryBackground
         </item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
 
     <style name="Theme.VKUpload.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
@@ -38,11 +39,33 @@
         <item name="android:textColor">@color/colorOnBackgroundMedium</item>
     </style>
 
-    <style name="Theme.VKUpload.InputField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="hintTextColor">@color/colorOnBackgroundMedium</item>
-        <item name="android:textColor">@color/colorOnBackground</item>
-        <item name="hintEnabled">false</item>
-        <item name="errorIconDrawable">@null</item>
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
+
+    <style name="ThemeOverlay.TextField" parent="ThemeOverlay.MaterialComponents.TextInputEditText">
+        <item name="colorPrimary" tools:ignore="DuplicateDefinition">@color/colorBrand</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSurface">@color/colorPrimarySurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorOnPrimary" tools:ignore="DuplicateDefinition">@color/colorOnSecondary</item>
+    </style>
+    
+    <style name="Theme.VKUpload.TextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.TextField</item>
+    </style>
+
+    <style name="AppTheme.EditLayoutShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
 
 </resources>
