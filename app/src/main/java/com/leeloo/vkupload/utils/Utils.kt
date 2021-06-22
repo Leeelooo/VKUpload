@@ -8,8 +8,8 @@ import com.leeloo.vkupload.R
 fun Long.formatFileSize(context: Context): String {
     var times = 0
     var currentSize = this.toDouble()
-    while (currentSize / 1024 > 1.0 && times < 3) {
-        currentSize /= 1024
+    while (currentSize / 1000 > 1.0 && times < 3) {
+        currentSize /= 1000
         times++
     }
     return context.resources.getString(

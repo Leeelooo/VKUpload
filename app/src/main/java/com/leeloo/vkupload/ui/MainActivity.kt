@@ -2,6 +2,8 @@ package com.leeloo.vkupload.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.leeloo.vkupload.R
+import com.leeloo.vkupload.data.local.changeToStopMode
+import com.leeloo.vkupload.data.local.changeToUnstoppableMode
+import com.leeloo.vkupload.data.local.isInStopMode
+import com.leeloo.vkupload.service.UploadingService
 import com.leeloo.vkupload.utils.CircularOutlineProvider
 import com.leeloo.vkupload.utils.getVideo
 import com.vk.api.sdk.VK
@@ -24,6 +30,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_content.*
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
+    private lateinit var popup: PopupMenu
     private lateinit var videoAdapter: VideoAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
 
@@ -33,15 +40,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        viewModel.onVideoSelected(getVideo(this, it))
+    private val getContent = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+        if (it != null) {
+            viewModel.onVideoSelected(getVideo(this, it))
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        UploadingService.stop = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onStop()
+        if (isInStopMode()) {
+            UploadingService.stop = true
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null && viewModel.viewState.value == null) {
+        if (savedInstanceState == null) {
             if (VK.isLoggedIn()) {
                 viewModel.onLogin()
             } else {
@@ -52,19 +74,29 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         viewModel.viewState.observe(this, this::render)
+        viewModel.videoCreationLiveData.observe(this) {
+            if (it != null) {
+                UploadingService.enqueueWork(this, it)
+            }
+        }
     }
 
     private fun initViews() {
         main_profile.setOnClickListener {
-            if (VK.isLoggedIn()) {
-                VK.clearAccessToken(this)
-                viewModel.onLogout()
-            } else {
+            if (!VK.isLoggedIn()) {
                 VK.login(this, arrayListOf(VKScope.VIDEO))
             }
         }
         main_profile.outlineProvider = CircularOutlineProvider
         main_profile.clipToOutline = true
+
+        popup = PopupMenu(this, menu)
+        popup.setOnMenuItemClickListener { onOptionsItemSelected(it) }
+        popup.menuInflater.inflate(R.menu.menu, popup.menu)
+        menu.setOnClickListener {
+            popup.menu.findItem(R.id.item_menu_mode).isChecked = isInStopMode()
+            popup.show()
+        }
 
         videoAdapter = VideoAdapter(
             loginListener = { VK.login(this, arrayListOf(VKScope.VIDEO)) },
@@ -74,7 +106,16 @@ class MainActivity : AppCompatActivity() {
         video_recycler.layoutManager = LinearLayoutManager(this)
 
         video_upload_fab.setOnClickListener {
-            getContent.launch("video/*")
+            getContent.launch(
+                arrayOf(
+                    "video/x-msvideo", //avi
+                    "video/mp4", //mp4
+                    "video/3gpp", //3gp
+                    "video/x-flv", //flv
+                    "video/quicktime", //mov
+                    "video/x-ms-wmv" //wmv
+                )
+            )
         }
 
         bottomSheetDialog = BottomSheetDialog(this)
@@ -135,6 +176,25 @@ class MainActivity : AppCompatActivity() {
         video_upload_fab.isVisible = viewState.isUserLoggedIn
         videoAdapter.updateData(viewState.data, state)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_menu_mode -> {
+                if (item.isChecked) {
+                    changeToStopMode()
+                } else {
+                    changeToUnstoppableMode()
+                }
+                true
+            }
+            R.id.item_menu_exit -> {
+                viewModel.onLogout()
+                true
+            }
+            else -> throw IllegalStateException("wrong menu id ${item.itemId}")
+        }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val callback = object : VKAuthCallback {

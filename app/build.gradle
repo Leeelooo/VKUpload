@@ -48,6 +48,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
 
     implementation "com.vk:androidsdk:$vk_sdk_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

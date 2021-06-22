@@ -13,7 +13,7 @@ data class ViewState(
     val onDeviceVideo: OnDeviceVideo?
 ) {
 
-    fun userLogedIn() = ViewState(
+    fun userLoggedIn() = ViewState(
         isUserLoggedIn = true,
         user = null,
         isLoading = false,
@@ -23,7 +23,7 @@ data class ViewState(
     )
 
     fun userLoaded(user: RemoteUser) = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = user,
         isLoading = this.isLoading,
         isError = this.isError,
@@ -32,7 +32,7 @@ data class ViewState(
     )
 
     fun userLoadingError() = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = null,
         isLoading = this.isLoading,
         isError = this.isError,
@@ -41,7 +41,7 @@ data class ViewState(
     )
 
     fun initialVideoLoading() = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = true,
         isError = false,
@@ -50,7 +50,7 @@ data class ViewState(
     )
 
     fun initialVideoLoadingError() = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = false,
         isError = true,
@@ -59,7 +59,7 @@ data class ViewState(
     )
 
     fun videosLoaded(data: List<LocalVideo>) = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = false,
         isError = false,
@@ -68,7 +68,7 @@ data class ViewState(
     )
 
     fun updateVideo(video: LocalVideo) = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = false,
         isError = false,
@@ -85,7 +85,7 @@ data class ViewState(
     )
 
     fun addVideo(video: LocalVideo) = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = false,
         isError = false,
@@ -96,7 +96,7 @@ data class ViewState(
     )
 
     fun deleteVideo(videoId: Long) = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = false,
         isError = false,
@@ -112,7 +112,7 @@ data class ViewState(
     )
 
     fun videoSelected(onDeviceVideo: OnDeviceVideo) = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = this.isLoading,
         isError = this.isError,
@@ -121,7 +121,7 @@ data class ViewState(
     )
 
     fun dismissDialog() = ViewState(
-        isUserLoggedIn = this.isUserLoggedIn,
+        isUserLoggedIn = true,
         user = this.user,
         isLoading = this.isLoading,
         isError = this.isError,

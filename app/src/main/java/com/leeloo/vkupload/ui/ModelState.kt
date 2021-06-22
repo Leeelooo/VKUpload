@@ -13,7 +13,7 @@ sealed class ModelState {
     }
 
     object UserLoggedIn : ModelState() {
-        override fun reduce(oldState: ViewState) = oldState.userLogedIn()
+        override fun reduce(oldState: ViewState) = oldState.userLoggedIn()
     }
 
     data class UserLoaded(
@@ -51,7 +51,7 @@ sealed class ModelState {
     }
 
     data class VideoUploadingStart(
-        private val video: LocalVideo
+        val video: LocalVideo
     ) : ModelState() {
         override fun reduce(oldState: ViewState): ViewState = oldState.addVideo(video)
     }
@@ -71,6 +71,10 @@ sealed class ModelState {
 
     object DismissDialog : ModelState() {
         override fun reduce(oldState: ViewState): ViewState = oldState.dismissDialog()
+    }
+
+    object NothingState : ModelState() {
+        override fun reduce(oldState: ViewState): ViewState = oldState
     }
 
 }

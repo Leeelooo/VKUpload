@@ -14,6 +14,7 @@ import kotlin.concurrent.thread
 interface VideoRepository {
     val liveData: LiveData<ModelState>
     fun getVideos()
+    fun getVideo(id: Long): LocalVideo?
     fun createNewEntry(onDeviceVideo: OnDeviceVideo, title: String)
     fun updateEntryTransferredSize(id: Long, transferredSize: Long)
     fun updateEntryStatus(id: Long, newState: VideoUploadStatus)
@@ -33,7 +34,7 @@ interface VideoRepository {
     }
 }
 
-class VideoRepositoryImpl(
+private class VideoRepositoryImpl(
     context: Context
 ) : VideoRepository {
     private val _liveData = MutableLiveData<ModelState>()
@@ -67,6 +68,30 @@ class VideoRepositoryImpl(
                     _liveData.postValue(ModelState.VideosLoadingFailed(e))
                 }
             }
+        }
+    }
+
+    override fun getVideo(id: Long): LocalVideo? {
+        val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
+        val cursor = dbHelper.readableDatabase.query(
+            VideoContract.VideoEntry.TABLE_NAME,
+            null,
+            selection,
+            arrayOf("$id"),
+            null,
+            null,
+            null
+        )
+
+        try {
+            if (cursor.moveToNext()) {
+                return cursor.getVideo()
+            }
+            return null
+        } catch (e: Exception) {
+            return null
+        } finally {
+            cursor.close()
         }
     }
 
@@ -115,7 +140,11 @@ class VideoRepositoryImpl(
 
         val video = getVideo(id)
         if (updatedRows == 1 && video != null) {
-            _liveData.postValue(ModelState.VideoUpdated(video))
+            if (newState == VideoUploadStatus.ERROR) {
+                updateEntryTransferredSize(id, 0L) //required reupload
+            } else {
+                _liveData.postValue(ModelState.VideoUpdated(video))
+            }
         }
     }
 
@@ -140,30 +169,6 @@ class VideoRepositoryImpl(
 
     override fun closeConnections() {
         dbHelper.close()
-    }
-
-    private fun getVideo(id: Long): LocalVideo? {
-        val selection = "${VideoContract.VideoEntry.COLUMN_NAME_ID} = ?"
-        val cursor = dbHelper.readableDatabase.query(
-            VideoContract.VideoEntry.TABLE_NAME,
-            null,
-            selection,
-            arrayOf("$id"),
-            null,
-            null,
-            null
-        )
-
-        try {
-            if (cursor.moveToNext()) {
-                return cursor.getVideo()
-            }
-            return null
-        } catch (e: Exception) {
-            return null
-        } finally {
-            cursor.close()
-        }
     }
 
     companion object {

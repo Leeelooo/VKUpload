@@ -2,10 +2,12 @@ package com.leeloo.vkupload.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.leeloo.vkupload.data.local.VideoRepository
 import com.leeloo.vkupload.data.remote.UserRepository
 import com.leeloo.vkupload.vo.OnDeviceVideo
+import com.vk.api.sdk.VK
 
 class MainViewModel : ViewModel() {
     private val videoRepository = VideoRepository.getInstance()
@@ -21,12 +23,20 @@ class MainViewModel : ViewModel() {
     private val _viewState: MediatorLiveData<ViewState> by lazy {
         MediatorLiveData<ViewState>().also { liveData ->
             liveData.value = ViewState.init()
-            liveData.addSource(_modelState) { liveData.value = it.reduce(liveData.value!!) }
+            liveData.addSource(_modelState) {
+                if (it is ModelState.VideoUploadingStart) {
+                    _videoCreationLiveData.value = it.video.id
+                }
+                liveData.value = it.reduce(liveData.value!!)
+            }
         }
     }
     val viewState: LiveData<ViewState>
         get() = _viewState
 
+    private val _videoCreationLiveData = MutableLiveData<Long>()
+    val videoCreationLiveData: LiveData<Long>
+        get() = _videoCreationLiveData
 
     fun onLogin() {
         userRepository.userLoggedIn()
@@ -34,6 +44,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun onLogout() {
+        VK.logout()
         videoRepository.deleteAll()
         _modelState.value = ModelState.Init
     }
@@ -56,6 +67,11 @@ class MainViewModel : ViewModel() {
 
     fun onVideoSelected(onDeviceVideo: OnDeviceVideo) {
         _modelState.value = ModelState.VideoSelected(onDeviceVideo)
+    }
+
+    fun onStop() {
+        _modelState.value = ModelState.NothingState
+        _videoCreationLiveData.value = null
     }
 
 }

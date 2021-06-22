@@ -3,6 +3,7 @@ package com.leeloo.vkupload.utils
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.webkit.MimeTypeMap
 import com.leeloo.vkupload.vo.OnDeviceVideo
 
 private enum class Columns {
@@ -22,12 +23,15 @@ fun getVideo(context: Context, uri: Uri): OnDeviceVideo {
         OnDeviceVideo(
             uri = uri,
             size = cursor?.getLong(cursor.getColumnIndexOrThrow(requiredFields[Columns.COLUMN_VIDEO_SIZE]))
-                ?: 0L,
+                ?: -1L,
             title = cursor?.getString(cursor.getColumnIndexOrThrow(requiredFields[Columns.COLUMN_VIDEO_TITLE]))
                 ?: ""
         )
     }
 }
+
+fun getMimeType(context: Context, uri: Uri): String? =
+    MimeTypeMap.getSingleton().getExtensionFromMimeType(context.contentResolver.getType(uri))
 
 private fun getFileCursor(context: Context, uri: Uri) =
     context.contentResolver.query(

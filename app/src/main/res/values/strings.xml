@@ -16,5 +16,7 @@
     <string name="filesize_kilobytes">%.1f KB</string>
     <string name="filesize_megabytes">%.1f MB</string>
     <string name="filesize_gigabytes">%.1f GB</string>
+    <string name="text_item_menu_stop_in_background">Stop in background</string>
+    <string name="text_item_menu_exit">Exit</string>
 
 </resources>

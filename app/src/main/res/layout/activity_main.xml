@@ -42,6 +42,16 @@
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.Theme.h6" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/menu"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackgroundBorderless" />
+
         </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

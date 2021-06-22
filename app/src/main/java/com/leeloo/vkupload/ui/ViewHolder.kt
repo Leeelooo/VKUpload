@@ -25,27 +25,39 @@ class VideoViewHolder(
     private lateinit var data: LocalVideo
 
     fun bind(item: LocalVideo) {
+        if (!this::data.isInitialized) {
+            Glide.with(preview)
+                .load(item.uri)
+                .into(preview)
+            title.text = item.title
+        }
+
+        if (!this::data.isInitialized || data.status != item.status) {
+            val statusIconResource = when (item.status) {
+                VideoUploadStatus.PENDING -> R.drawable.ic_outline_pending_24
+                VideoUploadStatus.LOADING -> R.drawable.ic_outline_save_alt_24
+                VideoUploadStatus.ERROR -> R.drawable.ic_outline_error_outline_24
+                VideoUploadStatus.FINISHED -> R.drawable.ic_outline_done_24
+            }
+            Glide.with(statusIcon)
+                .load(statusIconResource)
+                .into(statusIcon)
+        }
+
         data = item
 
-        Glide.with(preview)
-            .load(item.uri)
-            .into(preview)
-        title.text = item.title
-        progress.text = progress.resources.getString(
-            R.string.text_video_uploading_progress,
-            item.transferredSize.formatFileSize(progress.context),
-            item.totalSize.formatFileSize(progress.context)
-        )
-
-        val statusIconResource = when (item.status) {
-            VideoUploadStatus.PENDING -> R.drawable.ic_outline_pending_24
-            VideoUploadStatus.LOADING -> R.drawable.ic_outline_save_alt_24
-            VideoUploadStatus.ERROR -> R.drawable.ic_outline_error_outline_24
-            VideoUploadStatus.FINISHED -> R.drawable.ic_outline_done_24
-        }
-        Glide.with(statusIcon)
-            .load(statusIconResource)
-            .into(statusIcon)
+        progress.text =
+            when {
+                data.totalSize == -1L ->
+                    item.transferredSize.formatFileSize(progress.context)
+                data.status == VideoUploadStatus.FINISHED ->
+                    item.totalSize.formatFileSize(progress.context)
+                else -> progress.resources.getString(
+                    R.string.text_video_uploading_progress,
+                    item.transferredSize.formatFileSize(progress.context),
+                    item.totalSize.formatFileSize(progress.context)
+                )
+            }
     }
 
     fun clear() {

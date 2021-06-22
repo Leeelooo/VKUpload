@@ -1,5 +1,6 @@
 package com.leeloo.vkupload.requests
 
+import com.leeloo.vkupload.vo.LocalVideoUpload
 import com.leeloo.vkupload.vo.RemoteVideoPost
 import com.vk.api.sdk.requests.VKRequest
 import org.json.JSONObject
@@ -47,5 +48,5 @@ class PostVideoRequest(
     }
 
     override fun parse(r: JSONObject): RemoteVideoPost =
-        RemoteVideoPost.parse(r)
+        RemoteVideoPost.parse(r.getJSONObject("response"))
 }

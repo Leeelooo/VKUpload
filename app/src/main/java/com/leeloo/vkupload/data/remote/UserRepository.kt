@@ -42,6 +42,8 @@ class UserRepositoryImpl : UserRepository {
                 override fun fail(error: Exception) {
                     if (VK.isLoggedIn()) {
                         _liveData.postValue(ModelState.UserLoadingFailed(error))
+                    } else {
+                        _liveData.postValue(ModelState.Init)
                     }
                 }
 

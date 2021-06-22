@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_menu_mode"
+        android:enabled="true"
+        android:title="@string/text_item_menu_stop_in_background"
+        android:checkable="true"
+        android:checked="true"/>
+    <item
+        android:id="@+id/item_menu_exit"
+        android:title="@string/text_item_menu_exit"
+        android:enabled="true"/>
+</menu>
